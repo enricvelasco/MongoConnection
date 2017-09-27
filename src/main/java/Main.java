@@ -24,17 +24,30 @@ public class Main {
 
         System.out.println("conexion OK");
         //MongoClient mongoClient = new MongoClient(new MongoClientURI("mongodb://192.168.1.135:27017"));
-        //HOLA
-        //HOLA
         try {
-            System.out.println("Entra en el try");
+            /*System.out.println("Entra en el try");
             MongoDatabase db = mongoClient.getDatabase("demografia");
             System.out.println("Hace el get database");
             MongoIterable<String> collections = db.listCollectionNames();
             System.out.println("Hace el fet collectionNames");
             for (String collectionName: collections) {
                 System.out.println(collectionName);
+            }*/
+            DB db = mongoClient.getDB("demografia");
+            Set<String> colls = db.getCollectionNames();
+            for (String s : colls) {
+                System.out.println("*****");
+                System.out.println(s);
+                DBCollection collection = db.getCollection(s);
+                DBCursor cursor = collection.find();
+                while (cursor.hasNext()) {
+                    DBObject obj = cursor.next();
+                    System.out.println(obj);
+                    //do your thing
+                }
             }
+
+
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
