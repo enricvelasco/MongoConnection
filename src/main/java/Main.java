@@ -25,15 +25,7 @@ public class Main {
         System.out.println("conexion OK");
         //MongoClient mongoClient = new MongoClient(new MongoClientURI("mongodb://192.168.1.135:27017"));
         try {
-            /*System.out.println("Entra en el try");
-            MongoDatabase db = mongoClient.getDatabase("demografia");
-            System.out.println("Hace el get database");
-            MongoIterable<String> collections = db.listCollectionNames();
-            System.out.println("Hace el fet collectionNames");
-            for (String collectionName: collections) {
-                System.out.println(collectionName);
-            }*/
-            DB db = mongoClient.getDB("demografia");
+            /*DB db = mongoClient.getDB("demografia");
             Set<String> colls = db.getCollectionNames();
             for (String s : colls) {
                 System.out.println("*****");
@@ -45,13 +37,41 @@ public class Main {
                     System.out.println(obj);
                     //do your thing
                 }
-            }
+            }*/
+            DB db = mongoClient.getDB("demografia"); //se conecta a la BBDD y si no la crea
 
+            //Tiene que cargar las collections
+            String [] allCollectionNames = {
+                    "ciudades",
+                    "comunidades",
+                    "paises"
+            };
+            for (String collectionName: allCollectionNames){
+                elementInitCollection(collectionName, db);
+            }
+            //db.createCollection("ciudades", null);
+            //db.createCollection("comunidades", null);
+            //db.createCollection("paises", null);
+
+            //DBCollection collection = db.getCollection("paises");
+
+
+            db.getCollectionNames().forEach(System.out::println);
 
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             mongoClient.close();
         }
+    }
+    public void elementInitCollection(String collectionName, DB databaseName){
+        DBCollection collection = databaseName.getCollection(collectionName);
+        BasicDBObject document = new BasicDBObject();
+        document.put("_id","-1");
+        document.put("name","X");
+        collection.insert(document);
+        BasicDBObject searchQuery = new BasicDBObject();
+        searchQuery.put("_id", "-1");
+        collection.remove(searchQuery);
     }
 }
